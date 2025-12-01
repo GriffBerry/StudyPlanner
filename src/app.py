@@ -23,6 +23,31 @@ def create_app(config: Config | None = None) -> Flask:
     @app.route("/health", methods=["GET"])
     def health() -> Any:
         return jsonify({"status": "ok"}), 200
+    
+    @app.route("/admin/clear", methods=["POST"])
+    def admin_clear() -> Any:
+        """
+        Dangerous helper: clears all tasks from the database.
+
+        Protected by a simple admin token:
+        - Check header: X-Admin-Token
+        - Or query parameter: ?token=...
+        """
+        cfg_local: Config = app.config["APP_CONFIG"]
+        repo_local: TaskRepository = app.config["TASK_REPO"]
+
+        # Read token from header or query param
+        token = request.headers.get("X-Admin-Token") or request.args.get("token", "")
+
+        # If an admin_token is configured, enforce it
+        if cfg_local.admin_token:
+            if token != cfg_local.admin_token:
+                return jsonify({"error": "unauthorized"}), 401
+
+        # If no admin_token is set, it's effectively open (not recommended in prod)
+        repo_local.clear_all()
+        app.logger.warning("All tasks cleared via /admin/clear")
+        return jsonify({"status": "ok", "message": "all tasks cleared"}), 200
 
     @app.route("/tasks", methods=["GET"])
     def list_tasks() -> Any:
