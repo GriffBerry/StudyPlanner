@@ -1,7 +1,7 @@
 from datetime import date
 from typing import Any, Dict
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 
 from .config import Config
 from .models import Task
@@ -15,6 +15,10 @@ def create_app(config: Config | None = None) -> Flask:
     app = Flask(__name__)
     app.config["APP_CONFIG"] = cfg
     app.config["TASK_REPO"] = repo
+
+    @app.route("/", methods=["GET"])
+    def index() -> Any:
+        return render_template("index.html")
 
     @app.route("/health", methods=["GET"])
     def health() -> Any:

@@ -13,5 +13,5 @@ tasks.db
 # macOS metadata
 .DS_Store
 
-# VS Code settings (optional to keep out of repo)
+# VS Code settings
 .vscode/

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>StudyPlanner</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      margin: 0;
+      padding: 1.5rem;
+      background: #0b0c10;
+      color: #e5e5e5;
+    }
+    h1 {
+      margin-top: 0;
+    }
+    .container {
+      display: grid;
+      grid-template-columns: 1.2fr 1.8fr;
+      gap: 2rem;
+    }
+    form {
+      border: 1px solid #333;
+      border-radius: 0.75rem;
+      padding: 1rem 1.25rem;
+      background: #15171f;
+    }
+    label {
+      display: block;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.4rem 0.5rem;
+      margin-top: 0.25rem;
+      border-radius: 0.4rem;
+      border: 1px solid #444;
+      background: #0f1117;
+      color: #f5f5f5;
+    }
+    button {
+      margin-top: 0.75rem;
+      padding: 0.45rem 0.9rem;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button.primary {
+      background: #4f46e5;
+      color: white;
+    }
+    button.secondary {
+      background: #374151;
+      color: white;
+      margin-left: 0.5rem;
+    }
+    .status {
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      min-height: 1.2rem;
+    }
+    .plan {
+      border: 1px solid #333;
+      border-radius: 0.75rem;
+      padding: 1rem 1.25rem;
+      background: #15171f;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .day {
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid #222;
+    }
+    .day:last-child {
+      border-bottom: none;
+    }
+    .sessions {
+      margin-left: 1rem;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+    }
+    .session {
+      margin-bottom: 0.25rem;
+    }
+    code {
+      font-size: 0.8rem;
+      background: #111827;
+      padding: 0.1rem 0.25rem;
+      border-radius: 0.25rem;
+    }
+    @media (max-width: 800px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>📚 StudyPlanner</h1>
+  <p>Enter your tasks and generate a day-by-day study plan based on deadlines and difficulty.</p>
+
+  <div class="container">
+    <div>
+      <form id="task-form">
+        <h2>Add Task</h2>
+        <label>
+          Course
+          <input type="text" id="course" required placeholder="ASTRO, MATH, CS, ..." />
+        </label>
+        <label>
+          Task name
+          <input type="text" id="name" required placeholder="Problem set, essay, exam review, ..." />
+        </label>
+        <label>
+          Deadline
+          <input type="date" id="deadline" required />
+        </label>
+        <label>
+          Estimated hours
+          <input type="number" id="est_hours" min="0.5" step="0.5" required value="2" />
+        </label>
+        <label>
+          Difficulty (1–5)
+          <select id="difficulty">
+            <option value="1">1 – easy</option>
+            <option value="2">2</option>
+            <option value="3" selected>3 – medium</option>
+            <option value="4">4</option>
+            <option value="5">5 – hard</option>
+          </select>
+        </label>
+
+        <button type="submit" class="primary">Save Task</button>
+        <button type="button" id="refresh-plan" class="secondary">Refresh Plan</button>
+
+        <div class="status" id="status"></div>
+      </form>
+
+      <p style="font-size: 0.85rem; margin-top: 1rem;">
+        API endpoints:
+        <code>GET /health</code>,
+        <code>GET /tasks</code>,
+        <code>POST /tasks</code>,
+        <code>GET /plan</code>
+      </p>
+    </div>
+
+    <div class="plan">
+      <h2>Plan</h2>
+      <div id="plan-content">
+        Click <strong>Refresh Plan</strong> to load the current schedule.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function createTask(event) {
+      event.preventDefault();
+      const status = document.getElementById("status");
+      status.textContent = "Saving task...";
+
+      const payload = {
+        course: document.getElementById("course").value.trim(),
+        name: document.getElementById("name").value.trim(),
+        deadline: document.getElementById("deadline").value,
+        est_hours: parseFloat(document.getElementById("est_hours").value),
+        difficulty: parseInt(document.getElementById("difficulty").value, 10),
+      };
+
+      try {
+        const resp = await fetch("/tasks", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        if (!resp.ok) {
+          const err = await resp.json().catch(() => ({}));
+          throw new Error(err.error || "Failed to create task");
+        }
+
+        const data = await resp.json();
+        status.textContent = `Saved task #${data.id}: ${data.course} – ${data.name}`;
+        status.style.color = "#4ade80";
+
+        // Optionally refresh plan automatically
+        await loadPlan();
+      } catch (err) {
+        console.error(err);
+        status.textContent = err.message || "Error saving task";
+        status.style.color = "#f97373";
+      }
+    }
+
+    async function loadPlan() {
+      const container = document.getElementById("plan-content");
+      container.textContent = "Loading plan...";
+
+      try {
+        const resp = await fetch("/plan");
+        if (!resp.ok) {
+          throw new Error("Failed to fetch plan");
+        }
+
+        const data = await resp.json();
+
+        if (!data.days || data.days.length === 0) {
+          container.innerHTML = "<em>No tasks within the planning horizon.</em>";
+          return;
+        }
+
+        container.innerHTML = "";
+        data.days.forEach((day) => {
+          const dayDiv = document.createElement("div");
+          dayDiv.className = "day";
+
+          const dateEl = document.createElement("div");
+          dateEl.innerHTML = `<strong>${day.date}</strong> — ${day.total_hours.toFixed(1)} hours`;
+          dayDiv.appendChild(dateEl);
+
+          const sessionsDiv = document.createElement("div");
+          sessionsDiv.className = "sessions";
+
+          if (day.sessions.length === 0) {
+            sessionsDiv.innerHTML = "<em>No sessions</em>";
+          } else {
+            day.sessions.forEach((sess) => {
+              const row = document.createElement("div");
+              row.className = "session";
+              row.textContent = `${sess.course} – ${sess.name} (${sess.hours.toFixed(
+                1
+              )}h, due ${sess.deadline})`;
+              sessionsDiv.appendChild(row);
+            });
+          }
+
+          dayDiv.appendChild(sessionsDiv);
+          container.appendChild(dayDiv);
+        });
+      } catch (err) {
+        console.error(err);
+        container.textContent = "Error loading plan.";
+      }
+    }
+
+    document.getElementById("task-form").addEventListener("submit", createTask);
+    document.getElementById("refresh-plan").addEventListener("click", loadPlan);
+
+    // Try to auto-load plan on first load
+    loadPlan();
+  </script>
+</body>
+</html>
