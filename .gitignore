@@ -1,0 +1,17 @@
+# Python virtual environment
+venv/
+__pycache__/
+*.pyc
+
+# Local environment variables and database
+.env
+tasks.db
+
+# pytest cache
+.pytest_cache/
+
+# macOS metadata
+.DS_Store
+
+# VS Code settings (optional to keep out of repo)
+.vscode/
