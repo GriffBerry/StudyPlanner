@@ -3,10 +3,10 @@
 ## 1) Executive Summary
 
 **Problem**
-Today, college students often have numerous overlapping assignments, all of which feel like they must be submitted in a certain way. Couple that with an average college student’s schedule, especially at UVA, and it becomes hard to keep track on what to work on whenever the time presents itself, while being deadline conscious, as well as recognizing how much work the assignment will be- something that doesn’t necessarily come through on an average agenda or planner. This project aims to target individual students who want a concrete plan, mapped out day by day, instead of dealing with an extensive and often vague to do list.  
+ Today, college students often have numerous overlapping assignments, all of which feel like they must be submitted in a certain way. Couple that with an average college student’s schedule, especially at UVA, and it becomes hard to keep track on what to work on whenever the time presents itself, while being deadline conscious, as well as recognizing how much work the assignment will be- something that doesn’t necessarily come through on an average agenda or planner. This project aims to target individual students who want a concrete plan, mapped out day by day, instead of dealing with an extensive and often vague to do list.  
 
-**Solution**
-StudyPlanner is a small web app and REST API that transforms a list of upcoming tasks (categorized by name, deadline, estimated hours, difficulty) into a concrete study schedule, able to go up to three weeks in advance. The user enters the assignments in a simple browser UI, which the backend validates and stores in SQLITE, and runs a scheduling algorithm that spreads the work across upcoming days, while recognizing that no student can study for an entire day straight. It is set to allow for substantial studying per day, but this was chosen thinking students would mostly want to use it during finals or midterms. The app can be run locally in Docker or deployed to the cloud via Render for easy access, as well as demoing. 
+**Solution** 
+ StudyPlanner is a small web app and REST API that transforms a list of upcoming tasks (categorized by name, deadline, estimated hours, difficulty) into a concrete study schedule, able to go up to three weeks in advance. The user enters the assignments in a simple browser UI, which the backend validates and stores in SQLITE, and runs a scheduling algorithm that spreads the work across upcoming days, while recognizing that no student can study for an entire day straight. It is set to allow for substantial studying per day, but this was chosen thinking students would mostly want to use it during finals or midterms. The app can be run locally in Docker or deployed to the cloud via Render for easy access, as well as demoing. 
 ---
 
 ## 2) System Overview
@@ -21,7 +21,7 @@ StudyPlanner is a small web app and REST API that transforms a list of upcoming 
 
 **Architecture Diagram**
 
-* File: `assets/architecture.png`
+* File: `assets/Architure Diagram - Final Case`
 * Embedded in README as:
 
 ```markdown
@@ -267,7 +267,7 @@ Planned improvements and stretch ideas:
 
 ---
 
-## 7) Links (Required)
+## 7) Links
 
 * **GitHub Repo:** [https://github.com/GriffBerry/StudyPlanner](https://github.com/GriffBerry/StudyPlanner)
 * **Public Cloud App (Render):** [https://studyplanner-ggq3.onrender.com](https://studyplanner-ggq3.onrender.com)
