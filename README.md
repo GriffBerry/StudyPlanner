@@ -22,8 +22,6 @@
 * File: `assets/architecture.png`
 * Embedded in README as:
 
-```markdown
-### Architecture Diagram
 
 ![Architecture Diagram](assets/architecture.png)
 
