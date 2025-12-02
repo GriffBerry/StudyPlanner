@@ -268,3 +268,9 @@ Planned improvements and stretch ideas:
 
 * **GitHub Repo:** [https://github.com/GriffBerry/StudyPlanner](https://github.com/GriffBerry/StudyPlanner)
 * **Public Cloud App (Render):** [https://studyplanner-ggq3.onrender.com](https://studyplanner-ggq3.onrender.com)
+
+---
+
+## 8) License and Credits
+
+* OpenAi. (2025). ChatGPT (GPT-5.1) [Large language Model]. Retrieved from https://chatgpt.com
