@@ -19,11 +19,11 @@
 
 **Architecture Diagram**
 
-* File: `assets/Architure Diagram - Final Case`
+* File: `assets/Architecture Diagram - Final Case.png`
 * Embedded in README as:
 
 ```markdown
-![Architecture Diagram](assets/Architure Diagram - Final Case)
+![Architecture Diagram](assets/Architecture Diagram - Final Case.png)
 ```
 
 The diagram shows:
