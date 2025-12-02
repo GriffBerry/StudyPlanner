@@ -23,8 +23,9 @@
 * Embedded in README as:
 
 ```markdown
+### Architecture Diagram
+
 ![Architecture Diagram](assets/architecture.png)
-```
 
 The diagram shows:
 
